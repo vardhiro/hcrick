@@ -47,7 +47,7 @@ int main(){
 		break;
 	}else{
 		cout << "Computer : " << comp << "\n";
-		runsbyc += user;
+		runsbyc += comp;
 	}	 
 	}
 	}
