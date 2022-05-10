@@ -1,2 +1,3 @@
 # hcrick
-A handcricket terminal emulator
+
+A handcricket emulator
