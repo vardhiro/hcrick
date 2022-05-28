@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+console.clear();
+
 import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
 import inquirer from "inquirer";
@@ -40,7 +42,7 @@ async function welcome() {
    console.log(
       `  > If you win the toss, you get to choose either ${chalk.bgGreen(
          "BAT"
-      )} or ${chalk.bgMagentaBright("BALL")} else the computer chooses to bat.`
+      )} or ${chalk.bgMagentaBright("BOWL")} else the computer chooses to bat.`
    );
    console.log(
       `  > As you get ${chalk.bgRed(
@@ -156,8 +158,8 @@ async function chooseMode(tossWon) {
    const answers = await inquirer.prompt({
       name: "mode",
       type: "list",
-      message: "BAT or BALL?",
-      choices: ["BAT", "BALL"],
+      message: "BAT or BOWL?",
+      choices: ["BAT", "BOWL"],
    });
    return handleChoosingMode(answers.mode);
 }
@@ -165,6 +167,9 @@ async function chooseMode(tossWon) {
 async function handleBatting() {
    console.log(chalk.greenBright(`You're batting now, ${playerName}!`));
    while (userStat.batting.current) {
+      if (userStat.bowling.done && runs.user > runs.comp) {
+         break;
+      }
       const answers = await inquirer.prompt({
          name: "runs",
          type: "list",
@@ -176,7 +181,7 @@ async function handleBatting() {
       const spinner = createSpinner("Batting...").start();
       await sleep();
 
-      const compRuns = Math.floor(Math.random() * (6 - 1) + 1);
+      const compRuns = Math.round(Math.random() * (6 - 1) + 1);
       if (answers.runs !== compRuns) {
          spinner.success({
             text: chalk.green(
@@ -207,6 +212,7 @@ async function handleBatting() {
 
 async function handleBowling() {
    console.log(chalk.greenBright(`You're bowling now, ${playerName}!`));
+   console.clear();
    while (userStat.bowling.current) {
       const answers = await inquirer.prompt({
          name: "runs",
@@ -219,7 +225,8 @@ async function handleBowling() {
       const spinner = createSpinner("Bowling...").start();
       await sleep();
 
-      const compRuns = Math.floor(Math.random() * (6 - 1) + 1);
+      const compRuns = Math.round(Math.random() * (6 - 1) + 1);
+
       if (answers.runs === compRuns) {
          spinner.success({
             text: chalk.green(`Howzat!`),
@@ -229,7 +236,7 @@ async function handleBowling() {
       } else {
          runs.comp += compRuns;
          spinner.error({
-            text: chalk.redBright(`The computer has scored ${compRuns}`),
+            text: chalk.redBright(`The computer has scored ${compRuns} runs.`),
          });
       }
       console.log(
